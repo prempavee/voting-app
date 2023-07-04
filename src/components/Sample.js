@@ -15,7 +15,6 @@ export default function Sample ({ step, sample }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log('use effect sample', sample)
     setLoading(true)
     fetchAnswers()
   }, [step, sample, user])
@@ -136,7 +135,6 @@ export default function Sample ({ step, sample }) {
     })
   }
 
-  console.log('loading', loading)
   if (loading) return <Loading />
 
   return (

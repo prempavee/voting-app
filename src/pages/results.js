@@ -36,6 +36,8 @@ const Results = () => {
     setChoosenRound(id)
   }
 
+  if (loading) return <Loading />
+
   return (
     <MainContainer title='Results'>
       <ResultsRounds rounds={rounds} handleClickRound={handleClickRound} />

@@ -1,5 +1,3 @@
-
-
 const ResultsRounds = ({ rounds, handleClickRound }) => {
 
   return (

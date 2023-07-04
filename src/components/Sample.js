@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRounds } from '@/context/RoundContext'
 import { postVotes, getVotesForSample } from '@/api/votesApi'
 import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
+import Loading from '@/components/Loading'
 
 export default function Sample ({ step, sample }) {
   const [scores, setScores] = useState([])
@@ -14,18 +15,16 @@ export default function Sample ({ step, sample }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('use effect sample', sample)
     setLoading(true)
     fetchAnswers()
-    setLoading(false)
   }, [step, sample, user])
 
   const fetchAnswers = async () => {
+    const scoreQuestions = JSON.parse(scoreQuestionsJson)
+    const textQuestions = JSON.parse(textQuestionsJson)
     try {
       const { data } = await getVotesForSample(token, user.uid, String(currentRound.id), step, sample)
-
-      const scoreQuestions = JSON.parse(scoreQuestionsJson)
-      const textQuestions = JSON.parse(textQuestionsJson)
-
       data.data.forEach(item => {
         let foundIndex = scoreQuestions.findIndex((element) => Number(element.id) === Number(item.questionId))
         if (foundIndex !== -1) {
@@ -41,10 +40,13 @@ export default function Sample ({ step, sample }) {
       setQuestions(textQuestions)
 
     } catch (error) {
+      setScores(scoreQuestions)
+      setQuestions(textQuestions)
       console.log(error)
-      enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
+      enqueueSnackbar("Oops, couldn't get saved info", { variant: 'error' })
+    } finally {
+      setLoading(false)
     }
-
   }
 
   const handleChangeScore = (value, id) => {
@@ -134,6 +136,9 @@ export default function Sample ({ step, sample }) {
     })
   }
 
+  console.log('loading', loading)
+  if (loading) return <Loading />
+
   return (
     <>
       <div className='my-14 text-sm'>
@@ -203,6 +208,7 @@ export default function Sample ({ step, sample }) {
         type='button'
         className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mb-8'
         onClick={handleSaveClick}
+        disabled={loading}
       >
         Save my answers
       </button>

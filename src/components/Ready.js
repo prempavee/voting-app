@@ -1,11 +1,8 @@
 import React from 'react'
 import MainContainer from '@/components/MainContainer'
-import { useRounds } from '@/context/RoundContext'
 import StepsButtons from './StepsButtons'
 
 export default function Ready ({ judge }) {
-  const { samples } = useRounds()
-
   return (
     <MainContainer title='Home'>
       <div className='my-14 text-sm'>

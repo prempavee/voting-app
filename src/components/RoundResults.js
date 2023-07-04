@@ -5,7 +5,7 @@ import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import { useSnackbar } from 'notistack'
 import { useRounds } from '@/context/RoundContext'
 import { getAllJudges } from '@/api/judgesApi'
-import Loading from './Loading'
+import Loading from '@/components/Loading'
 
 const RoundResults = ({ round, rounds }) => {
   const { token } = useAuth()

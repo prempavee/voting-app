@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import MainContainer from '@/components/MainContainer'
 import { postJudge } from '@/api/judgesApi'
@@ -10,7 +9,6 @@ export default function Introduction ({ fetchData }) {
   const { enqueueSnackbar } = useSnackbar()
   const [formData, setFormData] = useState({ name: '', surname: '' })
   const { user, token } = useAuth()
-  const router = useRouter()
 
   const handleChange = (event) => {
     const { name, value } = event.target

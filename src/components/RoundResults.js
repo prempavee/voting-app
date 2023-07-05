@@ -90,8 +90,19 @@ const RoundResults = ({ round, rounds }) => {
       if (score >= 0) {
         groupedVotes[sample][questionGroup].scores.push(score)
         groupedVotes[sample][questionGroup].result = getResult(groupedVotes[sample][questionGroup].scores)
-        groupedVotes[sample].finalResult += groupedVotes[sample][questionGroup].result
       }
+    })
+
+    samples.forEach(sample => {
+      const sampleSymbol = sample.symbol.toLowerCase()
+  
+      scoreQuestions.forEach(q => {
+        const questionGroup = `question_${q.id}`
+        if (groupedVotes[sampleSymbol] && groupedVotes[sampleSymbol][questionGroup]) {
+          groupedVotes[sampleSymbol].finalResult += groupedVotes[sampleSymbol]?.[questionGroup].result ?? 0
+        }
+        
+      })
     })
 
     setVotes(groupedVotes)
@@ -106,7 +117,7 @@ const RoundResults = ({ round, rounds }) => {
   }
 
   if (round === null) return null
-  if (loading) return <Loading />
+  if (loading || !votes) return <Loading />
 
   return (
     <>

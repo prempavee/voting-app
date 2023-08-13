@@ -13,29 +13,30 @@ export const RoundContextProvider = ({
   const { token } = useAuth()
 
   const [currentRound, setCurrentRound] = useState()
-
   const [samples, setSamples] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchData = () => {
     setLoading(true)
 
-    Promise.all([getSamples(token), getCurrentRound(token)])
-      .then(([samplesResponse, currentRoundResponse]) => {
-        setSamples(samplesResponse.data)
-        setCurrentRound(currentRoundResponse.data)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    if (token) {
+      Promise.all([getSamples(token), getCurrentRound(token)])
+        .then(([samplesResponse, currentRoundResponse]) => {
+          setSamples(samplesResponse.data)
+          setCurrentRound(currentRoundResponse.data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
   }
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [token])
 
   // ROUNDS
   const createRound = async ({ title, startDate }) => {

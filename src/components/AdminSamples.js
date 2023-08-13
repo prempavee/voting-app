@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { useRounds } from '@/context/RoundContext'
+import SamplesInfo from './SamplesInfo'
 
 const AdminSamples = () => {
   const [newSample, setNewSample] = useState('')
@@ -43,7 +44,7 @@ const AdminSamples = () => {
                 return (
                   <li
                     key={item.symbol}
-                    className='m-2 bg-indigo-300 px-3 py-1.5'
+                    className='m-2 bg-indigo-400 px-3 py-1.5'
                   >
                     {item.symbol}
                   </li>
@@ -51,9 +52,7 @@ const AdminSamples = () => {
               })}
             </ul>
           )
-          : (
-            <p className='text-sm'>... no samples yet</p>
-          )
+          : <SamplesInfo />
         }
       </div>
       <div className='my-5'>

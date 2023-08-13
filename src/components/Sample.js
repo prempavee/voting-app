@@ -5,6 +5,7 @@ import { useRounds } from '@/context/RoundContext'
 import { postVotes, getVotesForSample } from '@/api/votesApi'
 import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import Loading from '@/components/Loading'
+import LoadingButton from './LoadingButton'
 
 export default function Sample ({ step, sample }) {
   const [scores, setScores] = useState([])
@@ -13,6 +14,7 @@ export default function Sample ({ step, sample }) {
   const { enqueueSnackbar } = useSnackbar()
   const { currentRound } = useRounds()
   const [loading, setLoading] = useState(true)
+  const [loadingButton, setLoadingButton] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -80,6 +82,8 @@ export default function Sample ({ step, sample }) {
   const handleSaveClick = async (event) => {
     event.preventDefault()
 
+    setLoadingButton(true)
+
     const votes = []
 
     scores.forEach(item => {
@@ -120,6 +124,8 @@ export default function Sample ({ step, sample }) {
       console.log(error)
       enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
     }
+
+    setLoadingButton(false)
 
   }
 
@@ -186,7 +192,7 @@ export default function Sample ({ step, sample }) {
                 <div className='flex flex-col'>
                   <div className='flex-1 flex flex-col'>
                     <p className='text-base'>{item.text}</p>
-                    <p className='text-sm text-slate-600 italic'>{item.comment}</p>
+                    <p className='text-sm text-gray-400 italic'>{item.comment}</p>
                   </div>
                   <textarea
                     id={`score${item.id}`}
@@ -208,6 +214,7 @@ export default function Sample ({ step, sample }) {
         onClick={handleSaveClick}
         disabled={loading}
       >
+        <LoadingButton loadingButton={loadingButton} />
         Save my answers
       </button>
     </>

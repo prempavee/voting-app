@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import { useRounds } from '@/context/RoundContext'
 import Loading from '@/components/Loading'
+import CurrentRoundInfo from './CurrentRoundInfo'
 
 const AdminRounds = () => {
   const { enqueueSnackbar } = useSnackbar()
-  const { createRound, getAllRounds, makeCurrent, currentRound } = useRounds()
+  const { createRound, getAllRounds, makeCurrent } = useRounds()
 
   const [rounds, setRounds] = useState([])
   const [newRound, setNewRound] = useState({ 
@@ -116,7 +117,7 @@ const AdminRounds = () => {
                   <li
                     key={item.id}
                     // className={`bg-${item.current ? 'green' : 'indigo'}-300 px-3 py-1.5 my-1`}
-                    className={item.current ? 'bg-green-300 px-3 py-1.5 my-1' : 'bg-indigo-300 px-3 py-1.5 my-1'}
+                    className={item.current ? 'bg-green-400 px-3 py-1.5 my-1' : 'bg-indigo-400 px-3 py-1.5 my-1'}
                   >
                     <div className='flex flex-row'>
                       <div className='flex-1'>
@@ -147,20 +148,14 @@ const AdminRounds = () => {
           )
         }
 
-        <div className='my-5'>
-          <h3 className='font-bold text-center'>Current round</h3>
-          {currentRound
-            ? <p className='text-green-800'>{currentRound.title} / {currentRound.start} </p>
-            : <p className='text-red-600'>NO ANY CURRENT ROUND!</p>
-          }
-        </div>
+        <CurrentRoundInfo />
 
         <div className='my-5'>
           <h3 className='font-bold text-center'>Create new round</h3>
           <form className='space-y-6' onSubmit={handleSubmitRound}>
             <div>
               <div className='mt-2'>
-                <label htmlFor='title' className='block text-sm font-medium leading-6 text-gray-900'>
+                <label htmlFor='title' className='block text-sm font-medium leading-6'>
                   Round title
                 </label>
                 <input
@@ -171,7 +166,7 @@ const AdminRounds = () => {
                   onChange={handleChangeRound}
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3'
                 />
-                <label htmlFor='startDate' className='block text-sm font-medium leading-6 text-gray-900'>
+                <label htmlFor='startDate' className='block text-sm font-medium leading-6'>
                   Start date
                 </label>
                 <input

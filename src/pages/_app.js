@@ -14,11 +14,11 @@ export default function App ({ Component, pageProps }) {
   const router = useRouter()
   return (
     <AuthContextProvider>
-      <RoundContextProvider>
-        <SnackbarProvider maxSnack={3}>
-          {noAuthRequired.includes(router.pathname)
-            ? (<Component {...pageProps} />)
-            : (
+      <SnackbarProvider maxSnack={3}>
+        {noAuthRequired.includes(router.pathname)
+          ? (<Component {...pageProps} />)
+          : (
+            <RoundContextProvider>
               <ProtectedRoute>
                 {adminOnly.includes(router.pathname)
                   ? (
@@ -27,9 +27,10 @@ export default function App ({ Component, pageProps }) {
                     </ProtectedAdminRouter>)
                   : (<Component {...pageProps} />)}
               </ProtectedRoute>
-              )}
-        </SnackbarProvider>
-      </RoundContextProvider>
+            </RoundContextProvider>
+          )
+        }
+      </SnackbarProvider>
     </AuthContextProvider>
   )
 }

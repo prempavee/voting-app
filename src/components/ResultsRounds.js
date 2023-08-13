@@ -12,8 +12,8 @@ const ResultsRounds = ({ rounds, handleClickRound }) => {
                   key={item.id}
                   className={
                     item.current
-                      ? 'bg-green-300 px-3 py-1.5 my-1'
-                      : 'bg-indigo-300 px-3 py-1.5 my-1'
+                      ? 'bg-green-400 px-3 py-1.5 my-1'
+                      : 'bg-indigo-400 px-3 py-1.5 my-1'
                   }
                 >
                   <button onClick={() => handleClickRound(item.id)} className='w-full'>

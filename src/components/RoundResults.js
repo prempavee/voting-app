@@ -11,7 +11,7 @@ const RoundResults = ({ round, rounds }) => {
   const { token } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(true)
-  const { samples } = useRounds()
+  const { samples, currenRound } = useRounds()
   const [judgesArray, setJudgesArray] = useState([])
   const [votes, setVotes] = useState()
   const [roundTitle, setRoundTitle] = useState()
@@ -116,7 +116,7 @@ const RoundResults = ({ round, rounds }) => {
     }
   }
 
-  if (round === null) return null
+  if (round === null) return <p className='my-14 font-bold text-red-500'>* No round choosen, pick a round from the list above</p>
   if (loading || !votes) return <Loading />
 
   return (
@@ -127,7 +127,7 @@ const RoundResults = ({ round, rounds }) => {
           <h3 className='text-xl font-bold my-5 text-center'>Sample {sample.symbol}: {votes[sample.symbol.toLowerCase()]?.finalResult}</h3>
           <div className='overflow-x-auto'>
             <table className='table-auto border-separate border-spacing-0.5 border border-slate-400'>
-              <thead className='bg-slate-400'>
+              <thead className='bg-green-600'>
                 <tr key='head1'>
                   <th key='questions' className='border border-slate-400' rowSpan={2}>Questions</th>
                   {judgesArray.map((judge) => (
@@ -180,7 +180,6 @@ const RoundResults = ({ round, rounds }) => {
       ))}
     </>
   )
-
 }
 
 export default RoundResults

@@ -57,7 +57,7 @@ export default function Introduction ({ fetchData }) {
         <h4 className='text-xl my-5 font-bold text-center'>READY?</h4>
 
         <div className=''>
-          <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
+          <label htmlFor='name' className='block text-sm font-medium leading-6'>
             Name
           </label>
           <input
@@ -71,7 +71,7 @@ export default function Introduction ({ fetchData }) {
         </div>
 
         <div className=''>
-          <label htmlFor='surname' className='block text-sm font-medium leading-6 text-gray-900'>
+          <label htmlFor='surname' className='block text-sm font-medium leading-6'>
             Surname
           </label>
           <input
@@ -93,7 +93,7 @@ export default function Introduction ({ fetchData }) {
             required
             onChange={() => setIsChecked((prev) => !prev)}
           />
-          <label htmlFor='acceptCheckbox' className='block text-sm font-medium leading-6 text-gray-900'>
+          <label htmlFor='acceptCheckbox' className='block text-sm font-medium leading-6 text-gray-400'>
             I understand and accept instructions
           </label>
         </div>

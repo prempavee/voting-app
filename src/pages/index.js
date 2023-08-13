@@ -5,12 +5,14 @@ import { useSnackbar } from 'notistack'
 import Introduction from '@/components/Introduction'
 import { getJudgeByUid } from '@/api/judgesApi'
 import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/router'
 
 export default function Home () {
   const { enqueueSnackbar } = useSnackbar()
-  const { user, token } = useAuth()
+  const { user, token, admin } = useAuth()
   const [judge, setJudge] = useState()
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   const fetchData = () => {
     getJudgeByUid(token, user.uid)
@@ -35,6 +37,10 @@ export default function Home () {
 
   if (loading) {
     return <Loading />
+  }
+
+  if (admin) {
+    router.push('/admin')
   }
 
   if (!judge) {

@@ -10,5 +10,6 @@ export const postSample = async (token, sample) => {
 export const getSamples = async (token) => {
   const url = `/getSamples`
   const { data } = await $host.get(url, { headers: { authorization: `Bearer ${token}` }})
+  // console.log('get samples', data)
   return data
 }

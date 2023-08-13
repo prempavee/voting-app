@@ -5,11 +5,13 @@ import { useSnackbar } from 'notistack'
 import Loading from '@/components/Loading'
 import ResultsRounds from '@/components/ResultsRounds'
 import RoundResults from '@/components/RoundResults'
+import CurrentRoundInfo from '@/components/CurrentRoundInfo'
+import SamplesInfo from '@/components/SamplesInfo'
 
 const Results = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(true)
-  const { getAllRounds, currentRound } = useRounds()
+  const { getAllRounds } = useRounds()
 
   const [rounds, setRounds] = useState([])
 
@@ -40,7 +42,9 @@ const Results = () => {
 
   return (
     <MainContainer title='Results'>
+      <SamplesInfo />
       <ResultsRounds rounds={rounds} handleClickRound={handleClickRound} />
+      <CurrentRoundInfo />
       <RoundResults round={choosenRound} rounds={rounds}/>
     </MainContainer>
   )

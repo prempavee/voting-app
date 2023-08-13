@@ -7,6 +7,7 @@ import Step2 from '@/components/steps/Step2'
 import Step3 from '@/components/steps/Step3'
 import Sample from '@/components/Sample'
 import StepsButtons from '@/components/StepsButtons'
+import SamplesInfo from '@/components/SamplesInfo'
 
 export default function Step () {
   const router = useRouter()
@@ -29,6 +30,9 @@ export default function Step () {
     return (
       <MainContainer title={`Step ${step}`}>
         {stepInfo}
+
+        <SamplesInfo />
+
         <SamplesButtonList step={step} />
         <StepsButtons step={step} />
       </MainContainer>

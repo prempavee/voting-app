@@ -32,6 +32,8 @@ export const RoundContextProvider = ({
           setLoading(false)
         })
     }
+
+    setLoading(false)
   }
 
   useEffect(() => {

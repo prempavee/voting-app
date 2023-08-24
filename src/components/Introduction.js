@@ -32,7 +32,7 @@ export default function Introduction ({ fetchData }) {
     <MainContainer title='Home'>
       <h1 className='text-4xl text-center my-14 font-bold'>1st Ganja Cup Thailand</h1>
       <h4 className='text-xl font-bold my-5'>
-        Welcome to the Jury panel of the Prempavee 1st GANJA CUP of Outdoor Regenerative Farming! 
+        Welcome to the Jury panel  
       </h4>
       <p className='text-base italic my-5'>
         This 2nd Tournament is dedicated to Landraces and Hybrids grown 100% in Thailand

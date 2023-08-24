@@ -34,9 +34,6 @@ export default function Introduction ({ fetchData }) {
       <h4 className='text-xl font-bold my-5'>
         Welcome to the Jury panel  
       </h4>
-      <p className='text-base italic my-5'>
-        This 2nd Tournament is dedicated to Landraces and Hybrids grown 100% in Thailand
-      </p>
 
       <div className='my-14'>
         <h4 className='text-xl my-5 font-bold text-center'>INSTRUCTIONS</h4>

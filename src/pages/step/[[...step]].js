@@ -42,7 +42,7 @@ export default function Step () {
     const sample = router.query.step[1]
     return (
       <MainContainer title={`Sample ${sample} | Step ${step}`}>
-        <Sample step={step} sample={sample} />
+        <Sample step={step} sample={sample} key={router.asPath} />
         <SamplesButtonList step={step} sample={sample} />
         <StepsButtons step={step} />
       </MainContainer>

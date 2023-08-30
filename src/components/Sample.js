@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useAuth } from '@/context/AuthContext'
 import { useRounds } from '@/context/RoundContext'
 import { postVotes, getVotesForSample } from '@/api/votesApi'
 import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import Loading from '@/components/Loading'
-import LoadingButton from './LoadingButton'
+import LoadingButton from '@/components/LoadingButton'
+
+const dataType = {
+  scores: 'scores',
+  questions: 'questions'
+}
 
 export default function Sample ({ step, sample }) {
   const [scores, setScores] = useState([])
@@ -15,11 +21,25 @@ export default function Sample ({ step, sample }) {
   const { currentRound } = useRounds()
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setLoading(true)
-    fetchAnswers()
-  }, [step, sample, user])
+    if (currentRound && step && sample && user) {
+      fetchAnswers()
+    }
+  }, [step, sample, user, currentRound])
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      saveData()
+    }
+    router.events.on('beforeHistoryChange', handleRouteChange)
+
+    return () => {
+      router.events.off('beforeHistoryChange', handleRouteChange)
+    }
+  }, [])
 
   const fetchAnswers = async () => {
     const scoreQuestions = JSON.parse(scoreQuestionsJson)
@@ -30,11 +50,13 @@ export default function Sample ({ step, sample }) {
         let foundIndex = scoreQuestions.findIndex((element) => Number(element.id) === Number(item.questionId))
         if (foundIndex !== -1) {
           scoreQuestions[foundIndex].score = item.score ?? -1
+          scoreQuestions.changed = false
         }
 
         foundIndex = textQuestions.findIndex((element) => Number(element.id) === Number(item.questionId))
         if (foundIndex !== -1) {
           textQuestions[foundIndex].answer = item.answer ?? ''
+          textQuestions.changed = false
         }
       })    
       setScores(scoreQuestions)
@@ -50,15 +72,92 @@ export default function Sample ({ step, sample }) {
     }
   }
 
+  const saveData = async () => {
+    setLoadingButton(true)
+
+    const scoresNameInLocalStorage = getNameInLocalStorage(dataType.scores)
+    const questionsNameInLocalStorage = getNameInLocalStorage(dataType.questions)
+    const scoresSaved = JSON.parse(localStorage.getItem(scoresNameInLocalStorage))
+    const questionsSaved = JSON.parse(localStorage.getItem(questionsNameInLocalStorage))
+
+    const votes = []
+
+    try {
+      if (scoresSaved && currentRound) {
+        scoresSaved.filter(item => item.changed).forEach(item => {
+          if (item.score > -1) {
+            votes.push({
+              uid: user.uid,
+              email: user.email,
+              round: String(currentRound.id),
+              roundTitle: currentRound.title,
+              step,
+              sample,
+              questionId: String(item.id),
+              question: item.text,
+              score: item.score
+            })
+          }
+        })
+      }
+  
+      if (questionsSaved && currentRound) {
+        questionsSaved.filter(item => item.changed).forEach(item => {
+          if (item.answer.trim() !== '') {
+            votes.push({
+              uid: user.uid,
+              email: user.email,
+              round: String(currentRound.id),
+              roundTitle: currentRound.title,
+              step,
+              sample,
+              questionId: String(item.id),
+              question: item.text,
+              answer: item.answer
+            })
+          }
+        })
+      } 
+    } catch (error) {
+      enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
+      setLoadingButton(false)
+      return
+    }
+
+    if (votes.length > 0) {
+      try {
+        const result = await postVotes(token, votes)
+        if (result.status !== 201) {
+          throw new Error()
+        }
+
+        enqueueSnackbar('Answers are saved', { variant: 'success' })
+
+        localStorage.removeItem(scoresNameInLocalStorage)
+        localStorage.removeItem(questionsNameInLocalStorage)
+      } catch (error) {
+        if (error && error.response && error.response.data) {
+          enqueueSnackbar(error.response.data, { variant: 'error' })
+        } else {
+          enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
+        }
+      }
+    }
+
+    setLoadingButton(false)
+  }
+
   const handleChangeScore = (value, id) => {
     if (value.trim() === '') {
       setScores(prevScores => {
         const newScores = prevScores.map((item) => {
           if (item.id === id) {
             item.score = -1
+            item.changed = true
           }
           return item
         })
+        saveToLocalStorage(newScores, dataType.scores)
         return newScores
       })
     } else {
@@ -70,63 +169,28 @@ export default function Sample ({ step, sample }) {
           const newScores = prevScores.map((item) => {
             if (item.id === id) {
               item.score = newScore
+              item.changed = true
             }
             return item
           })
+          saveToLocalStorage(newScores, dataType.scores)
           return newScores
         })
       }
     }
   }
 
+  const saveToLocalStorage = (data, savedDataType) => {
+    localStorage.setItem(getNameInLocalStorage(savedDataType), JSON.stringify(data))
+  }
+
+  const getNameInLocalStorage = savedDataType => {
+    return user.uid + '_' + savedDataType + '_' + step + '_' + sample
+  }
+
   const handleSaveClick = async (event) => {
     event.preventDefault()
-
-    setLoadingButton(true)
-
-    const votes = []
-
-    scores.forEach(item => {
-      if (item.score > -1) {
-        votes.push({
-          uid: user.uid,
-          email: user.email,
-          round: String(currentRound.id),
-          roundTitle: currentRound.title,
-          step,
-          sample,
-          questionId: String(item.id),
-          question: item.text,
-          score: item.score
-        })
-      }
-    })
-    questions.forEach(item => {
-      if (item.answer.trim() !== '') {
-        votes.push({
-          uid: user.uid,
-          email: user.email,
-          round: String(currentRound.id),
-          roundTitle: currentRound.title,
-          step,
-          sample,
-          questionId: String(item.id),
-          question: item.text,
-          answer: item.answer
-        })
-      }
-    })
-
-    try {
-      await postVotes(token, votes)
-      enqueueSnackbar('Answers are updated', { variant: 'success' })
-    } catch (error) {
-      console.log(error)
-      enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
-    }
-
-    setLoadingButton(false)
-
+    await saveData()
   }
 
   const handleChangeAnswer = async (value, id) => {
@@ -134,9 +198,11 @@ export default function Sample ({ step, sample }) {
       const newQ = prevQ.map((item) => {
         if (item.id === id) {
           item.answer = value
+          item.changed = true
         }
         return item
       })
+      saveToLocalStorage(newQ, dataType.questions)
       return newQ
     })
   }
@@ -212,7 +278,7 @@ export default function Sample ({ step, sample }) {
         type='button'
         className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mb-8'
         onClick={handleSaveClick}
-        disabled={loading}
+        disabled={loadingButton}
       >
         <LoadingButton loadingButton={loadingButton} />
         Save my answers

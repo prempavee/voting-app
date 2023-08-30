@@ -3,16 +3,16 @@ import { useRounds } from '@/context/RoundContext'
 import Link from 'next/link'
 
 const SamplesButtonList = ({ step, sample }) => {
-  const { samples } = useRounds()
+  const { currentSamples } = useRounds()
 
   return (
     <div className='my-14 flex flex-row flex-wrap justify-center'>
-      {samples.map((item) => {
-        const sampleButton = item.symbol
+      {currentSamples.map((item) => {
+        const sampleButton = item
         return (
           <Link
             href={`/step/${step}/${sampleButton.toLowerCase()}`}
-            key={item.symbol}
+            key={item}
           >
             <button
               type='button'

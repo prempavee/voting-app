@@ -1,7 +1,7 @@
 import { $host } from "./index"
 
-export const postRound = async (token, title, start) => {
-  const postData = { title, start }
+export const postRound = async (token, title, start, samplesNumber) => {
+  const postData = { title, start, samplesNumber }
   const url = `/postRound`
   const result = await $host.post(url, postData, { headers: { authorization: `Bearer ${token}` }})
   return result

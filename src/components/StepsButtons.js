@@ -3,11 +3,13 @@ import Link from 'next/link'
 
 const StepsButtons = ({ step }) => {
 
-  const classNormalButton = 'flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-  const classCurrentStepButton = 'flex justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600'
+  const classButton = 'flex justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 my-3 mx-auto w-3/4'
+
+  const classNormalButton = classButton + ' bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'
+  const classCurrentStepButton = classButton + ' bg-green-600 hover:bg-green-500 focus-visible:outline-green-600'
 
   return(
-    <div className='my-14 flex flex-row space-x-4 justify-center'>
+    <div className='my-14 grid grid-cols-1 md:grid-cols-3 justify-between'>
       <Link href='/step/1'>
         <button
           type='button'
@@ -16,7 +18,7 @@ const StepsButtons = ({ step }) => {
             : classNormalButton
           }
         >
-          Step 1
+          1. Before test
         </button>
       </Link>
 
@@ -28,7 +30,7 @@ const StepsButtons = ({ step }) => {
           : classNormalButton
           }
         >
-          Step 2
+          2. After test
         </button>
       </Link>
 
@@ -40,7 +42,7 @@ const StepsButtons = ({ step }) => {
             : classNormalButton
           }  
         >
-          Step 3
+          3. After meeting
         </button>
       </Link>
     </div>

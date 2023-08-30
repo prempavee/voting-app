@@ -7,14 +7,6 @@
   --background-rgb: 0, 0, 0;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
 body {
   color: rgb(var(--foreground-rgb)) !important;
   background: rgb(var(--background-rgb));
@@ -26,4 +18,12 @@ nav {
     rgb(75, 146, 34),
     rgb(97, 8, 225)
   );
+}
+
+.results-table {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  padding: 10px;
 }

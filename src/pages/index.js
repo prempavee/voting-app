@@ -43,9 +43,9 @@ export default function Home () {
     router.push('/admin')
   }
 
-  if (!judge) {
+  if (!judge || !judge.accepted) {
     return (
-      <Introduction fetchData={fetchData} />
+      <Introduction fetchData={fetchData} judge={judge} />
     )
   } else {
     return (

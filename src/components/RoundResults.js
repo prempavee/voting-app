@@ -9,9 +9,11 @@ import Loading from '@/components/Loading'
 
 const RoundResults = ({ round, rounds }) => {
   const { token } = useAuth()
+  const { getSamplesForRound } = useRounds()
   const { enqueueSnackbar } = useSnackbar()
+
   const [loading, setLoading] = useState(true)
-  const { samples, currenRound } = useRounds()
+  const [samples, setSamples] = useState([])
   const [judgesArray, setJudgesArray] = useState([])
   const [votes, setVotes] = useState()
   const [roundTitle, setRoundTitle] = useState()
@@ -20,22 +22,26 @@ const RoundResults = ({ round, rounds }) => {
   const textQuestions = JSON.parse(textQuestionsJson)
 
   useEffect(() => {
-    fetchData()
     if (round) {
       const r = rounds.find(item => item.id === round)
       setRoundTitle(`${r.title} / ${r.start}`)
+
+      const s = getSamplesForRound(r)
+      setSamples(s)
+
+      fetchData(s)
     }
   }, [round])
 
-  const fetchData = () => {
+  const fetchData = (s) => {
     if (round === null) return
 
     setLoading(true)
 
-    Promise.all([getAllVotesForRound(token, round), getAllJudges(token)])
-      .then(([votesData, judgesData]) => {
-        processJudges(judgesData.data)
-        processVotes(votesData.data.data)
+    getAllVotesForRound(token, round)
+      .then(({ data }) => {
+        processJudges(data.judges)
+        processVotes(data.votes, s)
       })
       .catch(error => {
         console.log(error)
@@ -56,11 +62,11 @@ const RoundResults = ({ round, rounds }) => {
     setJudgesArray(jArray)
   }
 
-  const processVotes = data => {
+  const processVotes = (data, s) => {
     const groupedVotes = {}
 
-    samples.forEach(sample => {
-      groupedVotes[sample.symbol.toLowerCase()] = {
+    s.forEach(sample => {
+      groupedVotes[sample.toLowerCase()] = {
         finalResult: 0
       }
     })
@@ -94,14 +100,13 @@ const RoundResults = ({ round, rounds }) => {
     })
 
     samples.forEach(sample => {
-      const sampleSymbol = sample.symbol.toLowerCase()
+      const sampleSymbol = sample.toLowerCase()
   
       scoreQuestions.forEach(q => {
         const questionGroup = `question_${q.id}`
         if (groupedVotes[sampleSymbol] && groupedVotes[sampleSymbol][questionGroup]) {
           groupedVotes[sampleSymbol].finalResult += groupedVotes[sampleSymbol]?.[questionGroup].result ?? 0
         }
-        
       })
     })
 
@@ -122,9 +127,12 @@ const RoundResults = ({ round, rounds }) => {
   return (
     <>
       <h2 className='text-4xl text-center my-14 font-bold'>{roundTitle}</h2>
+      <ol>
+      {samples.map(sample => <li key={sample}>{sample}: {votes[sample.toLowerCase()]?.finalResult}</li>)}
+      </ol>
       {samples.map(sample => (
-        <div className='my-14' key={sample.id}>
-          <h3 className='text-xl font-bold my-5 text-center'>Sample {sample.symbol}: {votes[sample.symbol.toLowerCase()]?.finalResult}</h3>
+        <div className='my-14 results-table' key={sample}>
+          <h3 className='text-xl font-bold my-5 text-center'>Sample {sample}: {votes[sample.toLowerCase()]?.finalResult}</h3>
           <div className='overflow-x-auto'>
             <table className='table-auto border-separate border-spacing-0.5 border border-slate-400'>
               <thead className='bg-green-600'>
@@ -153,12 +161,12 @@ const RoundResults = ({ round, rounds }) => {
                     <td key='questions' className='border border-slate-400'>{q.text}</td>
                     {judgesArray.map((judge) => (
                       <React.Fragment key={judge.id}>
-                        <td key={1} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.score}</td>
-                        <td key={2} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.score}</td>
-                        <td key={3} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_3?.score}</td>
+                        <td key={1} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.score}</td>
+                        <td key={2} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.score}</td>
+                        <td key={3} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_3?.score}</td>
                       </React.Fragment>
                     ))}
-                    <td key='result' className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.result}</td>
+                    <td key='result' className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.result}</td>
                   </tr>
                 ))}
                 {textQuestions.map(q => (
@@ -166,9 +174,9 @@ const RoundResults = ({ round, rounds }) => {
                     <td key='questions' className='border border-slate-400'>{q.text}</td>
                     {judgesArray.map((judge) => (
                       <React.Fragment key={judge.id}>
-                        <td key={1} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.answer}</td>
-                        <td key={2} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.answer}</td>
-                        <td key={3} className='border border-slate-400'>{votes[sample.symbol.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_3?.answer}</td>
+                        <td key={1} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.answer}</td>
+                        <td key={2} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.answer}</td>
+                        <td key={3} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_3?.answer}</td>
                       </React.Fragment>
                     ))}
                   </tr>

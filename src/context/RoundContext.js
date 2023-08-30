@@ -1,11 +1,22 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import Loading from '@/components/Loading'
-import { postSample, getSamples } from '@/api/samplesApi'
 import { postRound, getCurrentRound, getRounds, makeRoundCurrent } from '@/api/roundsApi'
 import { useAuth } from '@/context/AuthContext'
 
 export const RoundContext = createContext({})
 export const useRounds = () => useContext(RoundContext)
+
+function generateAlphabeticalLetters(count) {
+  const letters = []
+  let currentCharCode = 'A'.charCodeAt(0) // Get the character code of 'A'
+
+  for (let i = 0; i < count; i++) {
+    letters.push(String.fromCharCode(currentCharCode)) // Convert character code to letter
+    currentCharCode++ // Increment to the next character code
+  }
+
+  return letters
+}
 
 export const RoundContextProvider = ({
   children
@@ -13,17 +24,18 @@ export const RoundContextProvider = ({
   const { token } = useAuth()
 
   const [currentRound, setCurrentRound] = useState()
-  const [samples, setSamples] = useState([])
+  const [currentSamples, setCurrentSamples] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchData = () => {
     setLoading(true)
 
     if (token) {
-      Promise.all([getSamples(token), getCurrentRound(token)])
-        .then(([samplesResponse, currentRoundResponse]) => {
-          setSamples(samplesResponse.data)
+      getCurrentRound(token)
+        .then(currentRoundResponse => {
           setCurrentRound(currentRoundResponse.data)
+          let samplesAmount = currentRoundResponse.data.samplesNumber ?? 10
+          setCurrentSamples(generateAlphabeticalLetters(samplesAmount))
         })
         .catch(error => {
           console.log(error)
@@ -41,8 +53,8 @@ export const RoundContextProvider = ({
   }, [token])
 
   // ROUNDS
-  const createRound = async ({ title, startDate }) => {
-    return await postRound(token, title, startDate)
+  const createRound = async ({ title, startDate, samplesNumber }) => {
+    return await postRound(token, title, startDate, samplesNumber)
   }
 
   const makeCurrent = async (newId) => {
@@ -58,9 +70,8 @@ export const RoundContextProvider = ({
     return await getRounds(token)
   }
 
-  // SAMPLES
-  const createSample = async (newSample) => {
-    return await postSample(token, newSample)
+  const getSamplesForRound = (round) => {
+    return generateAlphabeticalLetters(round.samplesNumber)
   }
 
   return (
@@ -71,9 +82,9 @@ export const RoundContextProvider = ({
         makeCurrent,
 
         currentRound,
+        currentSamples,
 
-        samples,
-        createSample
+        getSamplesForRound
       }}
     >
       {loading ? <Loading /> : children}

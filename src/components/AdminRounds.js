@@ -11,7 +11,8 @@ const AdminRounds = () => {
   const [rounds, setRounds] = useState([])
   const [newRound, setNewRound] = useState({ 
     title: '',
-    startDate: '2023-08-01'
+    startDate: '2023-08-01',
+    samplesNumber: 10
   })
   const [loading, setLoading] = useState(true)
 
@@ -23,12 +24,12 @@ const AdminRounds = () => {
   const handleSubmitRound = async (event) => {
     event.preventDefault()
 
-    if (newRound.title && newRound.startDate) {
+    if (newRound.title && newRound.startDate && newRound.samplesNumber) {
       try {
         const result = await createRound(newRound)
         if (result.status === 201) {
           enqueueSnackbar('Round is created', { variant: 'success' })
-          setNewRound(prevRoundData => ({ ...prevRoundData, title: '' }))
+          setNewRound(prevRoundData => ({ ...prevRoundData, title: '', samplesNumber: 10 }))
           await fetchData()
         } else {
           enqueueSnackbar('Something went wrong', { variant: 'error' })
@@ -67,7 +68,8 @@ const AdminRounds = () => {
     const formattedDate = `${year}-${month}-${day}`
     setNewRound({
       title: '',
-      startDate: formattedDate
+      startDate: formattedDate,
+      samplesNumber: 10
     })
 
     fetchData()
@@ -116,19 +118,13 @@ const AdminRounds = () => {
                 return (
                   <li
                     key={item.id}
-                    // className={`bg-${item.current ? 'green' : 'indigo'}-300 px-3 py-1.5 my-1`}
                     className={item.current ? 'bg-green-400 px-3 py-1.5 my-1' : 'bg-indigo-400 px-3 py-1.5 my-1'}
                   >
                     <div className='flex flex-row'>
                       <div className='flex-1'>
-                      {item.title} / {item.start}
+                      {item.title} / {item.start} / {item.samplesNumber} samples
                       </div>
                       
-                      {/* {item.current && (
-                        <label htmlFor='current' className='block text-sm font-medium leading-6 text-gray-600'>
-                          current
-                        </label>
-                      )} */}
                       <input
                         type='checkbox'
                         name='current'
@@ -163,6 +159,19 @@ const AdminRounds = () => {
                   name='title'
                   required
                   value={newRound.title}
+                  onChange={handleChangeRound}
+                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3'
+                />
+                <label htmlFor='samplesNumber' className='block text-sm font-medium leading-6'>
+                  Amount of samples
+                </label>
+                <input
+                  id='samplesNumber'
+                  name='samplesNumber'
+                  type='number'
+                  min='1'
+                  required
+                  value={newRound.samplesNumber}
                   onChange={handleChangeRound}
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3'
                 />

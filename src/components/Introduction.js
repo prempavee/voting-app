@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { useSnackbar } from 'notistack'
 import MainContainer from '@/components/MainContainer'
+import LoadingButton from '@/components/LoadingButton'
 import { postJudge } from '@/api/judgesApi'
 import { useAuth } from '@/context/AuthContext'
 
-export default function Introduction ({ fetchData }) {
+
+export default function Introduction ({ fetchData, judge }) {
   const [isChecked, setIsChecked] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const [formData, setFormData] = useState({ name: '', surname: '' })
+  const [formData, setFormData] = useState({ name: judge.name ?? '', surname: judge.surname ?? '' })
   const { user, token } = useAuth()
+  const [loadingButton, setLoadingButton] = useState(false)
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -17,16 +20,19 @@ export default function Introduction ({ fetchData }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    
+    setLoadingButton(true)
 
     try {
-      await postJudge(token, user.uid, user.email, formData.name, formData.surname)
+      await postJudge(token, user.uid, user.email, formData.name, formData.surname, isChecked)
       await fetchData()
     } catch (error) {
       console.log(error)
       enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
-    }    
+    } finally {
+      setLoadingButton(false)
+    } 
   }
-
 
   return (
     <MainContainer title='Home'>
@@ -97,7 +103,9 @@ export default function Introduction ({ fetchData }) {
         <button
           type='submit'
           className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+          disabled={loadingButton}
         >
+          <LoadingButton loadingButton={loadingButton} />
           Let's go
         </button>
       </form>

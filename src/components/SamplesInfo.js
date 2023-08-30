@@ -1,9 +1,9 @@
 import { useRounds } from '@/context/RoundContext'
 
 const SamplesInfo = () => {
-  const { samples } = useRounds()
+  const { currentSamples } = useRounds()
 
-  if (samples && samples.length > 0) {
+  if (currentSamples && currentSamples.length > 0) {
     return null
   } else {
     return <p className='text-sm text-red-500 my-5'>... no samples yet or there's a network problem</p>

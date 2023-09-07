@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import MainContainer from '@/components/MainContainer'
 import LoadingButton from '@/components/LoadingButton'
@@ -9,9 +9,15 @@ import { useAuth } from '@/context/AuthContext'
 export default function Introduction ({ fetchData, judge }) {
   const [isChecked, setIsChecked] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const [formData, setFormData] = useState({ name: judge.name ?? '', surname: judge.surname ?? '' })
+  const [formData, setFormData] = useState({ name: '', surname: '' })
   const { user, token } = useAuth()
   const [loadingButton, setLoadingButton] = useState(false)
+
+  useEffect(() => {
+    if (judge) {
+      setFormData({ name: judge.name, surname: judge.surname})
+    }
+  }, judge)
 
   const handleChange = (event) => {
     const { name, value } = event.target

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { POST_ROUND, ROUNDS } from '@/apollo/roundsQueries'
+import { POST_ROUND, ROUNDS, CURRENT_ROUND } from '@/apollo/roundsQueries'
 import { useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 
@@ -50,7 +50,7 @@ const CreateRound = () => {
           variables: {
             input: newRound
           },
-          refetchQueries: [{ query: ROUNDS }]
+          refetchQueries: [{ query: ROUNDS }, { query: CURRENT_ROUND}]
         })
 
         updateNewRound()

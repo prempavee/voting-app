@@ -32,6 +32,13 @@ const Navbar = () => {
               >
                 Results
               </Link>
+              <Link
+                href='/semifinal-results'
+                className='text-white rounded-md px-3 py-2 text-lg font-medium uppercase'
+                aria-current='page'
+              >
+                Semifinal
+              </Link>
               </div>
             </>
             : 

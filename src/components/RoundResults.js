@@ -148,7 +148,7 @@ const RoundResults = ({ round, rounds }) => {
         <div className='my-14 results-table' key={sample}>
           <h3 className='text-xl font-bold my-5 text-center'>Sample {sample}: {votes[sample.toLowerCase()]?.finalResult}</h3>
           <div className='overflow-x-auto'>
-            <table className='table-auto border-separate border-spacing-0.5 border border-slate-400'>
+            <table key={sample} className='table-auto border-separate border-spacing-0.5 border border-slate-400'>
               <thead className='bg-green-600'>
                 <tr key='head1'>
                   <th key='questions' className='border border-slate-400' rowSpan={2}>Questions</th>

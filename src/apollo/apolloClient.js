@@ -3,19 +3,23 @@ import { setContext } from '@apollo/client/link/context'
 
 // Create an Apollo Client instance with an optional token parameter
 const createApolloClient = (token = null) => {
-  const httpLink = createHttpLink({ uri: process.env.NEXT_PUBLIC_API })
+  let link = createHttpLink({ uri: process.env.NEXT_PUBLIC_API })
 
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
+  if (token) {
+    const authLink = setContext((_, { headers }) => {
+      return {
+        headers: {
+          ...headers,
+          authorization: token ? `Bearer ${token}` : "",
+        }
       }
-    }
-  })
+    })
+
+    link = authLink.concat(link)
+  }
 
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link,
     cache: new InMemoryCache(),
     defaultOptions: {
       watchQuery: {
@@ -23,7 +27,7 @@ const createApolloClient = (token = null) => {
       },
     },
     
-    connectToDevTools: true
+    // connectToDevTools: true
   })
 
   return client

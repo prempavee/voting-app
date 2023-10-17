@@ -13,7 +13,7 @@ function MainContainer ({ children, title = '' }) {
       </Head>
       <main className='main min-h-screen'>
         <Navbar />
-        <div className='container max-w-screen-md font-mono px-10'>
+        <div className='container max-w-screen-md min-h-screen font-mono px-10'>
           {children}
         </div>
       </main>

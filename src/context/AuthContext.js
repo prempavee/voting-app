@@ -19,6 +19,7 @@ export const AuthContextProvider = ({
   const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
   const [admin, setAdmin] = useState(false)
+  const [error, setError] = useState(false)
 
   const getToken = async () => {
     if (getAuth(app) && getAuth(app).currentUser) {
@@ -27,6 +28,7 @@ export const AuthContextProvider = ({
         setToken(token)
         return token
       } catch (error) {
+        setError(true)
         console.log({ error })
         return { error }
       }
@@ -72,7 +74,7 @@ export const AuthContextProvider = ({
         console.log({ error })
         return { error }
       })
-    }
+  }
 
   useEffect(() => {
     const authentication = getAuth(app)
@@ -86,8 +88,12 @@ export const AuthContextProvider = ({
           setAdmin(false)
         }
 
-        const token = await getAuth(app).currentUser.getIdToken(true)
-        setToken(token)
+        try {
+          const token = await getAuth(app).currentUser.getIdToken(true)
+          setToken(token)
+        } catch (error) {
+          setError(true)
+        }
       } else {
         setUser(null)
         setToken(null)
@@ -109,7 +115,8 @@ export const AuthContextProvider = ({
         getToken,
         token,
         admin,
-        resetPassword
+        resetPassword,
+        error
       }}
     >
       {loading ? <Loading /> : children}

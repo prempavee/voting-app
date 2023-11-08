@@ -1,10 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const StepsButtons = ({ step }) => {
+  const { locale } = useRouter()
 
   const classButton = 'flex justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 my-3 mx-auto w-3/4'
-
   const classNormalButton = classButton + ' bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'
   const classCurrentStepButton = classButton + ' bg-green-600 hover:bg-green-500 focus-visible:outline-green-600'
 
@@ -18,7 +19,7 @@ const StepsButtons = ({ step }) => {
             : classNormalButton
           }
         >
-          1. Before test
+          {content[locale].STEP1}
         </button>
       </Link>
 
@@ -30,7 +31,7 @@ const StepsButtons = ({ step }) => {
           : classNormalButton
           }
         >
-          2. After test
+          {content[locale].STEP2}
         </button>
       </Link>
     </div>
@@ -39,3 +40,14 @@ const StepsButtons = ({ step }) => {
 }
 
 export default StepsButtons
+
+const content = {
+  th: {
+    STEP1: '1. ก่อนการทดสอบ',
+    STEP2: '2. หลังการทดสอบ'
+  },
+  en: {
+    STEP1: '1. Before test',
+    STEP2: '2. After test' 
+  }
+}

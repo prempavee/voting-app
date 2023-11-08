@@ -1,9 +1,12 @@
 import React from 'react'
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useRouter } from 'next/router'
 
 const Navbar = () => {
   const { user, logout, admin } = useAuth()
+  const { locale } = useRouter()
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -48,7 +51,7 @@ const Navbar = () => {
                 className='text-white rounded-md px-3 py-2 text-lg font-medium uppercase'
                 aria-current='page'
               >
-                Home
+                {content[locale].HOME}
               </Link>
             </div>
           }
@@ -60,8 +63,11 @@ const Navbar = () => {
               id='logout-button'
               onClick={handleLogout}
             >
-              <span className='text-white px-3 py-2 text-lg font-medium'>Logout</span>
+              <span className='text-white px-3 py-2 text-lg font-medium uppercase'>
+                {content[locale].LOGOUT}
+              </span>
             </button>
+            <LanguageSwitcher locale={locale} />
           </div>
         </div>
     </nav>
@@ -69,3 +75,14 @@ const Navbar = () => {
 }
 
 export default Navbar
+
+const content = {
+  th: {
+    HOME: 'หน้าหลัก',
+    LOGOUT: 'ออกจากระบบ'
+  },
+  en: {
+    HOME: 'home',
+    LOGOUT: 'logout'
+  }
+}

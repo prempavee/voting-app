@@ -61,7 +61,7 @@ const Login = () => {
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight'>
-            Sign in to your account
+            {content[router.locale].TITLE}
           </h2>
         </div>
 
@@ -69,7 +69,7 @@ const Login = () => {
           <form className='space-y-6' onSubmit={handleSubmit}>
             <div>
               <label htmlFor='email' className='block text-sm font-medium leading-6'>
-                Email address
+                {content[router.locale].EMAIL}
               </label>
               <div className='mt-2'>
                 <input
@@ -88,11 +88,11 @@ const Login = () => {
             <div>
               <div className='flex items-center justify-between'>
                 <label htmlFor='password' className='block text-sm font-medium leading-6'>
-                  Password
+                  {content[router.locale].PASSWORD}
                 </label>
                 <div className='text-sm'>
                   <a onClick={handleForgotPassword} className='font-semibold text-indigo-600 hover:text-indigo-500'>
-                    Forgot password?
+                    {content[router.locale].FORGOT_PASSWORD}
                   </a>
                 </div>
               </div>
@@ -115,7 +115,7 @@ const Login = () => {
               className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 items-center'
             >
               <LoadingButton loadingButton={loadingButton} />
-              Sign in
+              {content[router.locale].SIGN_IN}
             </button>
           </form>
         </div>
@@ -125,3 +125,20 @@ const Login = () => {
 }
 
 export default Login
+
+const content = {
+  th: {
+    TITLE: 'ลงชื่อเข้าใช้บัญชีของคุณ',
+    EMAIL: 'ที่อยู่อีเมล',
+    PASSWORD: 'รหัสผ่าน',
+    FORGOT_PASSWORD: 'ลืมรหัสผ่าน?',
+    SIGN_IN: 'เข้าสู่ระบบ'
+  },
+  en: {
+    TITLE: 'Sign in to your account',
+    EMAIL: 'Email address',
+    PASSWORD: 'Password',
+    FORGOT_PASSWORD: 'Forgot password?',
+    SIGN_IN: 'Sign in'
+  }
+}

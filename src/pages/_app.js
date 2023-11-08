@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import React from 'react'
 import { useRouter } from 'next/router'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { AuthContextProvider } from '@/context/AuthContext'
@@ -7,11 +8,12 @@ import ProtectedAdminRouter from '@/components/ProtectedAdminRouter'
 import AuthApollo from '@/components/AuthApollo'
 import { ApolloProvider } from '@apollo/client'
 import createApolloClient from '@/apollo/apolloClient'
+import { appWithTranslation } from 'next-i18next'
 
 const noAuthRequired = ['/login']
 const adminOnly = ['/admin', '/results']
 
-export default function App ({ Component, pageProps }) {
+function App ({ Component, pageProps }) {
   const router = useRouter()
 
   if (router.pathname.startsWith('/semifinal/')) {
@@ -46,3 +48,5 @@ export default function App ({ Component, pageProps }) {
     </AuthContextProvider>
   )
 }
+
+export default appWithTranslation(App)

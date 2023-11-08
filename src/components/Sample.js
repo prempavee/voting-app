@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useAuth } from '@/context/AuthContext'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { VOTES_FOR_SAMPLE, POST_VOTES } from '@/apollo/votesQueries'
-import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
+import { scoreQuestions as scoreQuestionsAll, textQuestions as textQuestionsAll } from '@/data/questions'
 import Loading from '@/components/Loading'
 import LoadingButton from '@/components/LoadingButton'
 
@@ -57,8 +57,9 @@ export default function Sample ({ step, sample, currentRound }) {
   }, [])
 
   const fetchAnswers = async () => {
-    const scoreQuestions = JSON.parse(scoreQuestionsJson)
-    const textQuestions = JSON.parse(textQuestionsJson)
+
+    const scoreQuestions = scoreQuestionsAll[router.locale]
+    const textQuestions = textQuestionsAll[router.locale]
     try {
       const response = await getVotesForSample({
         variables: {
@@ -89,7 +90,7 @@ export default function Sample ({ step, sample, currentRound }) {
       setScores(scoreQuestions)
       setQuestions(textQuestions)
       console.log(error)
-      enqueueSnackbar("Oops, couldn't get saved info", { variant: 'error' })
+      enqueueSnackbar(content[router.locale].SB_ERROR_NO_INFO, { variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -142,7 +143,7 @@ export default function Sample ({ step, sample, currentRound }) {
         })
       } 
     } catch (error) {
-      enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
+      enqueueSnackbar(content[router.locale].SB_ERROR, { variant: 'error' })
       setLoadingButton(false)
       return
     }
@@ -156,7 +157,7 @@ export default function Sample ({ step, sample, currentRound }) {
         })
 
         if (data.postVotes.success) {
-          enqueueSnackbar('Answers are saved', { variant: 'success' })
+          enqueueSnackbar(content[router.locale].SB_SUCCESS, { variant: 'success' })
 
           localStorage.removeItem(scoresNameInLocalStorage)
           localStorage.removeItem(questionsNameInLocalStorage)
@@ -165,7 +166,7 @@ export default function Sample ({ step, sample, currentRound }) {
         }
       } catch (error) {
         console.log(error)
-        enqueueSnackbar('Oops, something went wrong', { variant: 'error' })
+        enqueueSnackbar(content[router.locale].SB_ERROR, { variant: 'error' })
       }
     }
 
@@ -238,13 +239,12 @@ export default function Sample ({ step, sample, currentRound }) {
     <>
       <div className='my-14 text-sm'>
         <h4 className='text-base my-3 font-bold text-center uppercase'>
-          {(step === '1') && 'step 1. BEFORE TEST'}
-          {(step === '2') && 'step 2. AFTER TEST'}
-          {(step === '3') && 'step 3. AFTER MEETING'}
+          {(step === '1') && content[router.locale].STEP_1}
+          {(step === '2') && content[router.locale].STEP_2}
         </h4>
-        <h4 className='text-xl my-5 font-bold text-center uppercase'>Sample {sample}</h4>
-        <p className='my-3'>Answer for each of them about these questions giving a score from 0 to 100 where 0 is the worst and 100 is the better (please give less than 60 only if not sufficient and less than 50 only if really bad)</p>
-        <p className='my-3 italic'>You can save your answers even if you didn't finish for to continue later!</p>
+        <h4 className='text-xl my-5 font-bold text-center uppercase'>{content[router.locale].SAMPLE_TITLE} {sample}</h4>
+        <p className='my-3'>{content[router.locale].INSTRUCTIONS_LIST[0]}</p>
+        <p className='my-3 italic'>{content[router.locale].INSTRUCTIONS_LIST[1]}</p>
       </div>
 
       <div className='my-14 text-sm'>
@@ -306,8 +306,41 @@ export default function Sample ({ step, sample, currentRound }) {
         disabled={loadingButton}
       >
         <LoadingButton loadingButton={loadingButton} />
-        Save my answers
+        {content[router.locale].BUTTON}
       </button>
     </>
   )
+}
+
+const content = {
+  th: {
+    STEP_1: 'ขั้นตอนที่ 1 ตรวจสอบช่อดอก',
+    STEP_2: 'ขั้นตอนที่ 2 การทดลองสูบ',
+    SAMPLE_TITLE: 'ตัวอย่าง',
+    INSTRUCTIONS_LIST: [
+      'ตอบคำถามแต่ละข้อเกี่ยวกับคำถามเหล่านี้ โดยให้คะแนนตั้งแต่ 0 ถึง 100',
+      'เรียงจาก 0 ต่ำที่สุด และ 100 สูงที่สุด',
+      '(คะแนนต่ำกว่า 60 ถือว่าไม่ผ่านเกณฑ์กลางและคะแนนต่ำกว่า 50 คุณภาพแย่มาก)',
+      "You can save your answers even if you didn't finish for to continue later!",
+    ],
+    BUTTON: 'บันทึกคำตอบของฉัน',
+
+    SB_ERROR: 'Oops, something went wrong',
+    SB_ERROR_NO_INFO: "Oops, couldn't get saved info",
+    SB_SUCCESS: 'Answers are saved'
+  },
+  en: {
+    STEP_1: 'Step 1. Before test',
+    STEP_2: 'Step 2. After test',
+    SAMPLE_TITLE: 'Sample',
+    INSTRUCTIONS_LIST: [
+      'Answer for each of them about these questions giving a score from 0 to 100 where 0 is the worst and 100 is the better (please give less than 60 only if not sufficient and less than 50 only if really bad)',
+      "You can save your answers even if you didn't finish for to continue later!",
+    ],
+    BUTTON: 'Save my answers',
+
+    SB_ERROR: 'Oops, something went wrong',
+    SB_ERROR_NO_INFO: "Oops, couldn't get saved info",
+    SB_SUCCESS: 'Answers are saved'
+  }
 }

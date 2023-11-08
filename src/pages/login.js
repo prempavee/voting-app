@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack'
 import { useAuth } from '@/context/AuthContext'
 import MainContainer from '@/components/MainContainer'
 import LoadingButton from '@/components/LoadingButton'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const Login = () => {
   const [calledPush, setCalledPush] = useState(false)
@@ -59,6 +60,9 @@ const Login = () => {
   return (
     <MainContainer title='Login'>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+        <div className='flex flex-row justify-end'>
+          <LanguageSwitcher locale={router.locale} />
+        </div>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight'>
             {content[router.locale].TITLE}

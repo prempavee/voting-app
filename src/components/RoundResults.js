@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { scoreQuestions as scoreQuestionsAll, textQuestions as textQuestionsAll } from '@/data/questions'
+import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import { useSnackbar } from 'notistack'
 import Loading from '@/components/Loading'
 import generateAlphabeticalLetters from '@/utils/generateAlphabeticalLetters'
@@ -16,8 +16,8 @@ const RoundResults = ({ round, rounds }) => {
   const [votes, setVotes] = useState()
   const [roundTitle, setRoundTitle] = useState()
 
-  const scoreQuestions = scoreQuestionsAll.en
-  const textQuestions = textQuestionsAll.en
+  const scoreQuestions = (JSON.parse(scoreQuestionsJson)).en
+  const textQuestions = (JSON.parse(textQuestionsJson)).en
 
   const [allVotesForRound, { data: votesData }] = useLazyQuery(ALL_VOTES_FOR_ROUND, {
     fetchPolicy: 'cache-first'

@@ -49,7 +49,7 @@ const scoreQuestionsEn = [
   },
   {
     id: 9,
-    text: 'General Score (to rebalance with hybrids) using parameters given on guidelines?',
+    text: 'General Score',
     comment: '',
     score: -1
   },
@@ -70,7 +70,7 @@ const textQuestionsEn = [
   },
   {
     id: 12,
-    text: 'Effects after intake include method',
+    text: 'Effects after intake and method of intake',
     comment: '',
     answer: ''
   }
@@ -154,17 +154,17 @@ const textQuestionsTh = [
   }
 ]
 
-const scoreQuestions = {
+const scoreQuestionsJson = JSON.stringify({
   th: scoreQuestionsTh,
   en: scoreQuestionsEn
-}
+})
 
-const textQuestions = {
+const textQuestionsJson = JSON.stringify({
   th: textQuestionsTh,
   en: textQuestionsEn
-}
+})
 
 export {
-  scoreQuestions,
-  textQuestions
+  scoreQuestionsJson,
+  textQuestionsJson
 }

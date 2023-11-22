@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useAuth } from '@/context/AuthContext'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { VOTES_FOR_SAMPLE, POST_VOTES } from '@/apollo/votesQueries'
-import { scoreQuestions as scoreQuestionsAll, textQuestions as textQuestionsAll } from '@/data/questions'
+import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import Loading from '@/components/Loading'
 import LoadingButton from '@/components/LoadingButton'
 
@@ -57,9 +57,8 @@ export default function Sample ({ step, sample, currentRound }) {
   }, [])
 
   const fetchAnswers = async () => {
-
-    const scoreQuestions = scoreQuestionsAll[router.locale]
-    const textQuestions = textQuestionsAll[router.locale]
+    const scoreQuestionsSample = (JSON.parse(scoreQuestionsJson))[router.locale]
+    const textQuestionsSample = (JSON.parse(textQuestionsJson))[router.locale]
     try {
       const response = await getVotesForSample({
         variables: {
@@ -71,27 +70,24 @@ export default function Sample ({ step, sample, currentRound }) {
       })
 
       response.data.votesForSample.forEach(item => {
-        let foundIndex = scoreQuestions.findIndex((element) => Number(element.id) === Number(item.questionId))
+        let foundIndex = scoreQuestionsSample.findIndex((element) => Number(element.id) === Number(item.questionId))
         if (foundIndex !== -1) {
-          scoreQuestions[foundIndex].score = item.score ?? -1
-          scoreQuestions.changed = false
+          scoreQuestionsSample[foundIndex].score = item.score ?? -1
+          scoreQuestionsSample.changed = false
         }
 
-        foundIndex = textQuestions.findIndex((element) => Number(element.id) === Number(item.questionId))
+        foundIndex = textQuestionsSample.findIndex((element) => Number(element.id) === Number(item.questionId))
         if (foundIndex !== -1) {
-          textQuestions[foundIndex].answer = item.answer ?? ''
-          textQuestions.changed = false
+          textQuestionsSample[foundIndex].answer = item.answer ?? ''
+          textQuestionsSample.changed = false
         }
       })    
-      setScores(scoreQuestions)
-      setQuestions(textQuestions)
-
     } catch (error) {
-      setScores(scoreQuestions)
-      setQuestions(textQuestions)
       console.log(error)
       enqueueSnackbar(content[router.locale].SB_ERROR_NO_INFO, { variant: 'error' })
     } finally {
+      setScores(scoreQuestionsSample)
+      setQuestions(textQuestionsSample)
       setLoading(false)
     }
   }

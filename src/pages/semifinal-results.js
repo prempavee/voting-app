@@ -51,9 +51,17 @@ const Results = () => {
     }
   }, [data])
 
-  if (error) return <p>Can't get data</p>
+  if (error) return (
+    <MainContainer title='Semifinal Results'>
+      <p className='m-4'>Can't get data</p>
+    </MainContainer>
+  )
 
-  if (loading || !votes) return <Loading />
+  if (loading || !votes) return (
+    <MainContainer title='Semifinal Results'>
+      <Loading />
+    </MainContainer>
+  )
 
   return (
     <MainContainer title='Semifinal Results'>
@@ -74,7 +82,7 @@ const Results = () => {
         </ul>
 
         <div className='my-12 flex flex-row flex-wrap flex-start'>
-          {samples.map(item => <div className='flex flex-col m-4'>
+          {samples.map(item => <div className='flex flex-col m-4' key={item}>
             <h4 className='text-center text-l font-bold'>{item}: {votes[item].total}</h4>
             <table key={item}>
               <thead className='bg-green-600'>

@@ -3,7 +3,7 @@ import { ROUNDS, MAKE_ROUND_CURRENT, CURRENT_ROUND } from '@/apollo/roundsQuerie
 import { useMutation, useQuery } from '@apollo/client'
 import Loading from '@/components/Loading'
 import CurrentRoundInfo from '@/components/CurrentRoundInfo'
-import CreateRound from '@/components/CreateRound'
+import CreateRound from '@/components/admin/CreateRound'
 
 const AdminRounds = () => {
   const { enqueueSnackbar } = useSnackbar()

@@ -1,6 +1,6 @@
 import React from 'react'
 import MainContainer from '@/components/MainContainer'
-import AdminRounds from '@/components/AdminRounds'
+import AdminRounds from '@/components/admin/AdminRounds'
 
 const Admin = () => {
   return (

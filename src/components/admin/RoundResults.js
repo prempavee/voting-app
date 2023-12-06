@@ -148,46 +148,46 @@ const RoundResults = ({ round, rounds }) => {
         <div className='my-14 results-table' key={sample}>
           <h3 className='text-xl font-bold my-5 text-center'>Sample {sample}: {votes[sample.toLowerCase()]?.finalResult}</h3>
           <div className='overflow-x-auto'>
-            <table key={sample} className='table-auto border-separate border-spacing-0.5 border border-slate-400'>
-              <thead className='bg-green-600'>
+            <table key={sample} className='table-auto border-collapse border-spacing-0 border border-white text-sm'>
+              <thead key='head' className='bg-green-600'>
                 <tr key='head1'>
-                  <th key='questions' className='border border-slate-400' rowSpan={2}>Questions</th>
+                  <th key='questions' className='border border-white' rowSpan={2}>Questions</th>
                   {judgesArray.map((judge) => (
-                    <th key={judge.uid} className='border border-slate-400' colSpan={2}>
+                    <th key={judge.uid} className='border border-white' colSpan={2}>
                       {judge.name} {judge.surname}
                     </th>
                   ))}
-                  <th key='sum' className='border border-slate-400' rowSpan={2}>Summ</th>
+                  <th key='sum' className='border border-white' rowSpan={2}>Summ</th>
                 </tr>
                 <tr key='head2'>
                   {judgesArray.map((judge) => (
                     <React.Fragment key={judge.id}>
-                      <th key={1} className='border border-slate-400'>1</th>
-                      <th key={2} className='border border-slate-400'>2</th>
+                      <th key={1} className='border border-white'>1</th>
+                      <th key={2} className='border border-white'>2</th>
                     </React.Fragment>
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody key='body'>
                 {scoreQuestions.map(q => (
                   <tr key={q.id}>
-                    <td key='questions' className='border border-slate-400'>{q.text}</td>
+                    <td key='questions' className='border border-white'>{q.text}</td>
                     {judgesArray.map((judge) => (
                       <React.Fragment key={judge.id}>
-                        <td key={1} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.score}</td>
-                        <td key={2} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.score}</td>
+                        <td key={1} className='border border-white text-center'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.score}</td>
+                        <td key={2} className='border border-white text-center'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.score}</td>
                       </React.Fragment>
                     ))}
-                    <td key='result' className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.result}</td>
+                    <td key='result' className='border border-white text-center'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.result}</td>
                   </tr>
                 ))}
                 {textQuestions.map(q => (
                   <tr key={q.id}>
-                    <td key='questions' className='border border-slate-400'>{q.text}</td>
+                    <td key='questions' className='border border-white'>{q.text}</td>
                     {judgesArray.map((judge) => (
                       <React.Fragment key={judge.id}>
-                        <td key={1} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.answer}</td>
-                        <td key={2} className='border border-slate-400'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.answer}</td>
+                        <td key={1} className='border border-white text-sm align-top'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_1?.answer}</td>
+                        <td key={2} className='border border-white text-sm align-top'>{votes[sample.toLowerCase()]?.[`question_${q.id}`]?.[judge.uid]?.step_2?.answer}</td>
                       </React.Fragment>
                     ))}
                   </tr>

@@ -7,6 +7,7 @@ import { VOTES_FOR_SAMPLE, POST_VOTES } from '@/apollo/votesQueries'
 import { scoreQuestionsJson, textQuestionsJson } from '@/data/questions'
 import Loading from '@/components/Loading'
 import LoadingButton from '@/components/LoadingButton'
+import SampleQuestion from '@/components/SampleQuestion'
 
 const dataType = {
   scores: 'scores',
@@ -20,7 +21,7 @@ export default function Sample ({ step, sample, currentRound }) {
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
-  const router = useRouter()
+  const router = useRouter()  
 
   const [getVotesForSample, { data }] = useLazyQuery(VOTES_FOR_SAMPLE, {
     fetchPolicy: 'cache-first'
@@ -141,6 +142,7 @@ export default function Sample ({ step, sample, currentRound }) {
     } catch (error) {
       enqueueSnackbar(content[router.locale].SB_ERROR, { variant: 'error' })
       setLoadingButton(false)
+      console.log(error)
       return
     }
 
@@ -276,20 +278,7 @@ export default function Sample ({ step, sample, currentRound }) {
                 key={item.id}
                 className='py-3 border-b-[1px] border-slate-700'
               >
-                <div className='flex flex-col'>
-                  <div className='flex-1 flex flex-col'>
-                    <p className='text-base'>{item.text}</p>
-                    <p className='text-sm text-gray-400 italic'>{item.comment}</p>
-                  </div>
-                  <textarea
-                    id={`score${item.id}`}
-                    name={`score${item.id}`}
-                    value={item.answer}
-                    rows={5}
-                    onChange={(e) => handleChangeAnswer(e.target.value, item.id)}
-                    className='m-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3'
-                  />
-                </div>
+                <SampleQuestion item={item} handleChangeAnswer={handleChangeAnswer} />
               </li>
             )
           })}
